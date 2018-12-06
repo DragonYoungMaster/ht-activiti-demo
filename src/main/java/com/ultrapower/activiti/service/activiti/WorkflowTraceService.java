@@ -56,14 +56,15 @@ public class WorkflowTraceService {
      * @return 封装了各种节点信息
      */
     public List<Map<String, Object>> traceProcess(String processInstanceId) throws Exception {
-        Execution execution = runtimeService.createExecutionQuery().executionId(processInstanceId).singleResult();//执行实例
+        Execution execution = runtimeService.createExecutionQuery()
+            .executionId(processInstanceId).singleResult();//执行实例
         Object property = PropertyUtils.getProperty(execution, "activityId");
         String activityId = "";
         if (property != null) {
             activityId = property.toString();
         }
-        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId)
-                .singleResult();
+        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
+            .processInstanceId(processInstanceId).singleResult();
         ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService)
                 .getDeployedProcessDefinition(processInstance.getProcessDefinitionId());
         List<ActivityImpl> activitiList = processDefinition.getActivities();//获得当前任务的所有节点

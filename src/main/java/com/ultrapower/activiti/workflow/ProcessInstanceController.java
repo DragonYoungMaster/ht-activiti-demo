@@ -1,11 +1,7 @@
 package com.ultrapower.activiti.workflow;
 
-import com.ultrapower.activiti.util.Page;
-import com.ultrapower.activiti.util.PageUtil;
-
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,8 +10,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping(value = "/workflow/processinstance")
@@ -26,15 +20,8 @@ public class ProcessInstanceController {
 
     @RequestMapping(value = "running")
     @ResponseBody
-    public Page<ProcessInstance> running(HttpServletRequest request) {
-        Page<ProcessInstance> page = new Page<ProcessInstance>(PageUtil.PAGE_SIZE);
-        int[] pageParams = PageUtil.init(page, request);
-
-        ProcessInstanceQuery processInstanceQuery = runtimeService.createProcessInstanceQuery();
-        List<ProcessInstance> list = processInstanceQuery.listPage(pageParams[0], pageParams[1]);
-        page.setResult(list);
-        page.setTotalCount(processInstanceQuery.count());
-        return page;
+    public List<ProcessInstance> running() {
+        return runtimeService.createProcessInstanceQuery().list();
     }
 
     /**

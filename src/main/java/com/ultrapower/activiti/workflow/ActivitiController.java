@@ -94,39 +94,29 @@ public class ActivitiController {
 
     /**
      * 流程定义列表
-     *
-     * @return
      */
     @RequestMapping(value = "/process/list")
-    public Page<Object[]> processList(HttpServletRequest request) {
+    @ResponseBody
+    public List<Object[]> processList(HttpServletRequest request) {
     /*
      * 保存两个对象，一个是ProcessDefinition（流程定义），一个是Deployment（流程部署）
      */
-        List<Object[]> objects = new ArrayList<Object[]>();
-
-        Page<Object[]> page = new Page<Object[]>(PageUtil.PAGE_SIZE);
-        int[] pageParams = PageUtil.init(page, request);
+        List<Object[]> result = new ArrayList<>();
 
         ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery()
             .orderByDeploymentId().desc();
-        List<ProcessDefinition> processDefinitionList = processDefinitionQuery.listPage(pageParams[0], pageParams[1]);
+        List<ProcessDefinition> processDefinitionList = processDefinitionQuery.list();
         for (ProcessDefinition processDefinition : processDefinitionList) {
             String deploymentId = processDefinition.getDeploymentId();
             Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
-            objects.add(new Object[]{processDefinition, deployment});
+            result.add(new Object[]{processDefinition, deployment});
         }
 
-        page.setTotalCount(processDefinitionQuery.count());
-        page.setResult(objects);
-
-        return page;
+        return result;
     }
 
     /**
      * 部署全部流程
-     *
-     * @return
-     * @throws Exception
      */
     @RequestMapping(value = "/redeploy/all")
     public String redeployAll(@Value("#{APP_PROPERTIES['export.diagram.path']}") String exportDir) throws Exception {
