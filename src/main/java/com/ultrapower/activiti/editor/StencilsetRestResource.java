@@ -30,7 +30,7 @@ public class StencilsetRestResource {
   
   @RequestMapping(value="/editor/stencilset", method = RequestMethod.GET, produces = "application/json;charset=utf-8")
   public @ResponseBody String getStencilset() {
-    InputStream stencilsetStream = this.getClass().getClassLoader().getResourceAsStream("stencilset_bak.json");
+    InputStream stencilsetStream = this.getClass().getClassLoader().getResourceAsStream("stencilset.json");
     try {
       return IOUtils.toString(stencilsetStream, "utf-8");
     } catch (Exception e) {
