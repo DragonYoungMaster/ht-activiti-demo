@@ -14,8 +14,6 @@ import java.util.Map;
 
 /**
  * 流程定义缓存
- *
- * @author henryyan
  */
 public class ProcessDefinitionCache {
 

@@ -12,9 +12,6 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author HenryYan
- */
 public class WorkflowUtils {
 
     private static Logger logger = LoggerFactory.getLogger(WorkflowUtils.class);

@@ -1,5 +1,7 @@
 package com.ultrapower.activiti.management;
 
+import com.google.common.collect.Maps;
+
 import com.ultrapower.activiti.util.Page;
 import com.ultrapower.activiti.util.PageUtil;
 
@@ -13,7 +15,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,9 +30,9 @@ import javax.servlet.http.HttpServletRequest;
 public class JobController {
 
     @Autowired
-    ManagementService managementService;
+    private ManagementService managementService;
 
-    public static Map<String, String> JOB_TYPES = new HashMap<String, String>();
+    private static Map<String, String> JOB_TYPES = new HashMap<String, String>();
 
     static {
         JOB_TYPES.put("activate-processdefinition", "激活流程定义");
@@ -44,15 +45,12 @@ public class JobController {
 
     /**
      * Job列表
-     *
-     * @return
      */
     @RequestMapping(value = "list")
-    public ModelAndView jobList(HttpServletRequest request) {
-        ModelAndView mav = new ModelAndView("management/job-list");
+    public Map<String, Object> jobList(HttpServletRequest request) {
         JobQuery jobQuery = managementService.createJobQuery();
 
-        Page<Job> page = new Page<Job>(PageUtil.PAGE_SIZE);
+        Page<Job> page = new Page<>(PageUtil.PAGE_SIZE);
         int[] pageParams = PageUtil.init(page, request);
         List<Job> jobList = jobQuery.listPage(pageParams[0], pageParams[1]);
 
@@ -66,18 +64,18 @@ public class JobController {
             }
         }
 
-        mav.addObject("page", page);
-        mav.addObject("exceptionStacktraces", exceptionStacktraces);
-        mav.addObject("JOB_TYPES", JOB_TYPES);
+        Map<String, Object> result = Maps.newHashMap();
+        result.put("page", page);
+        result.put("exceptionStacktraces", exceptionStacktraces);
+        result.put("JOB_TYPES", JOB_TYPES);
 
-        return mav;
+        return result;
     }
 
     /**
      * 删除作业
      *
-     * @param jobId
-     * @return
+     * @param jobId 作业id
      */
     @RequestMapping(value = "delete/{jobId}")
     public String deleteJob(@PathVariable("jobId") String jobId) {
@@ -88,8 +86,7 @@ public class JobController {
     /**
      * 执行作业
      *
-     * @param jobId
-     * @return
+     * @param jobId 作业id
      */
     @RequestMapping(value = "execute/{jobId}")
     public String executeJob(@PathVariable("jobId") String jobId) {
@@ -100,8 +97,7 @@ public class JobController {
     /**
      * 更改作业可重试次数
      *
-     * @param jobId
-     * @return
+     * @param jobId 作业id
      */
     @RequestMapping(value = "change/retries/{jobId}")
     public String changeRetries(@PathVariable("jobId") String jobId, @RequestParam("retries") int retries) {
@@ -112,8 +108,7 @@ public class JobController {
     /**
      * 读取作业异常信息
      *
-     * @param jobId
-     * @return
+     * @param jobId 作业id
      */
     @RequestMapping(value = "stacktrace/{jobId}")
     @ResponseBody

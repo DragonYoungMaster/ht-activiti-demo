@@ -1,9 +1,5 @@
 package com.ultrapower.activiti.cmd;
 
-/**
- * @author: Henry Yan
- */
-
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;

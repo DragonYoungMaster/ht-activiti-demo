@@ -64,8 +64,6 @@ import javax.xml.stream.XMLStreamReader;
 
 /**
  * 流程管理控制器
- *
- * @author HenryYan
  */
 @Controller
 @RequestMapping(value = "/workflow")
@@ -109,7 +107,8 @@ public class ActivitiController {
         Page<Object[]> page = new Page<Object[]>(PageUtil.PAGE_SIZE);
         int[] pageParams = PageUtil.init(page, request);
 
-        ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery().orderByDeploymentId().desc();
+        ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery()
+            .orderByDeploymentId().desc();
         List<ProcessDefinition> processDefinitionList = processDefinitionQuery.listPage(pageParams[0], pageParams[1]);
         for (ProcessDefinition processDefinition : processDefinitionList) {
             String deploymentId = processDefinition.getDeploymentId();
@@ -143,16 +142,19 @@ public class ActivitiController {
      * @throws Exception
      */
     @RequestMapping(value = "/resource/read")
-    public void loadByDeployment(@RequestParam("processDefinitionId") String processDefinitionId, @RequestParam("resourceType") String resourceType,
-                                 HttpServletResponse response) throws Exception {
-        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionId(processDefinitionId).singleResult();
+    public void loadByDeployment(@RequestParam("processDefinitionId") String processDefinitionId
+        , @RequestParam("resourceType") String resourceType,
+        HttpServletResponse response) throws Exception {
+        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+            .processDefinitionId(processDefinitionId).singleResult();
         String resourceName = "";
         if (resourceType.equals("image")) {
             resourceName = processDefinition.getDiagramResourceName();
         } else if (resourceType.equals("xml")) {
             resourceName = processDefinition.getResourceName();
         }
-        InputStream resourceAsStream = repositoryService.getResourceAsStream(processDefinition.getDeploymentId(), resourceName);
+        InputStream resourceAsStream = repositoryService.getResourceAsStream(processDefinition.getDeploymentId()
+            , resourceName);
         byte[] b = new byte[1024];
         int len = -1;
         while ((len = resourceAsStream.read(b, 0, 1024)) != -1) {
@@ -169,11 +171,14 @@ public class ActivitiController {
      * @throws Exception
      */
     @RequestMapping(value = "/resource/process-instance")
-    public void loadByProcessInstance(@RequestParam("type") String resourceType, @RequestParam("pid") String processInstanceId, HttpServletResponse response)
-            throws Exception {
+    public void loadByProcessInstance(@RequestParam("type") String resourceType
+        , @RequestParam("pid") String processInstanceId, HttpServletResponse response)
+        throws Exception {
         InputStream resourceAsStream = null;
-        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
-        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionId(processInstance.getProcessDefinitionId())
+        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
+            .processInstanceId(processInstanceId).singleResult();
+        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+            .processDefinitionId(processInstance.getProcessDefinitionId())
                 .singleResult();
 
         String resourceName = "";
@@ -220,7 +225,8 @@ public class ActivitiController {
     @RequestMapping(value = "/process/trace/auto/{executionId}")
     public void readResource(@PathVariable("executionId") String executionId, HttpServletResponse response)
             throws Exception {
-        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(executionId).singleResult();
+        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
+            .processInstanceId(executionId).singleResult();
         BpmnModel bpmnModel = repositoryService.getBpmnModel(processInstance.getProcessDefinitionId());
         List<String> activeActivityIds = runtimeService.getActiveActivityIds(executionId);
 
@@ -240,7 +246,8 @@ public class ActivitiController {
     }
 
     @RequestMapping(value = "/deploy")
-    public String deploy(@Value("#{APP_PROPERTIES['export.diagram.path']}") String exportDir, @RequestParam(value = "file", required = false) MultipartFile file) {
+    public String deploy(@Value("#{APP_PROPERTIES['export.diagram.path']}") String exportDir
+        , @RequestParam(value = "file", required = false) MultipartFile file) {
 
         String fileName = file.getOriginalFilename();
 
@@ -256,7 +263,8 @@ public class ActivitiController {
                 deployment = repositoryService.createDeployment().addInputStream(fileName, fileInputStream).deploy();
             }
 
-            List<ProcessDefinition> list = repositoryService.createProcessDefinitionQuery().deploymentId(deployment.getId()).list();
+            List<ProcessDefinition> list = repositoryService.createProcessDefinitionQuery()
+                .deploymentId(deployment.getId()).list();
 
             for (ProcessDefinition processDefinition : list) {
                 WorkflowUtils.exportDiagramToFile(repositoryService, processDefinition, exportDir);
@@ -350,7 +358,8 @@ public class ActivitiController {
     private ProcessDefinition getProcessDefinition(String processDefinitionId) {
         ProcessDefinition processDefinition = PROCESS_DEFINITION_CACHE.get(processDefinitionId);
         if (processDefinition == null) {
-            processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionId(processDefinitionId).singleResult();
+            processDefinition = repositoryService.createProcessDefinitionQuery()
+                .processDefinitionId(processDefinitionId).singleResult();
             PROCESS_DEFINITION_CACHE.put(processDefinitionId, processDefinition);
         }
         return processDefinition;
@@ -378,7 +387,8 @@ public class ActivitiController {
      */
     @RequestMapping(value = "export/diagrams")
     @ResponseBody
-    public List<String> exportDiagrams(@Value("#{APP_PROPERTIES['export.diagram.path']}") String exportDir) throws IOException {
+    public List<String> exportDiagrams(@Value("#{APP_PROPERTIES['export.diagram.path']}") String exportDir)
+        throws IOException {
         List<String> files = new ArrayList<String>();
         List<ProcessDefinition> list = repositoryService.createProcessDefinitionQuery().list();
 

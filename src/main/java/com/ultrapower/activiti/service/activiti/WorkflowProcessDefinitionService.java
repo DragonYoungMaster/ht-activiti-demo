@@ -4,7 +4,6 @@ import com.ultrapower.activiti.util.WorkflowUtils;
 
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -32,9 +31,6 @@ public class WorkflowProcessDefinitionService {
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    protected RuntimeService runtimeService;
-
-    @Autowired
     protected RepositoryService repositoryService;
 
     @Autowired
@@ -49,8 +45,7 @@ public class WorkflowProcessDefinitionService {
     public ProcessDefinition findProcessDefinitionByPid(String processInstanceId) {
         HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
         String processDefinitionId = historicProcessInstance.getProcessDefinitionId();
-        ProcessDefinition processDefinition = findProcessDefinition(processDefinitionId);
-        return processDefinition;
+        return findProcessDefinition(processDefinitionId);
     }
 
     /**
@@ -60,8 +55,8 @@ public class WorkflowProcessDefinitionService {
      * @return 流程定义对象{@link ProcessDefinition}
      */
     public ProcessDefinition findProcessDefinition(String processDefinitionId) {
-        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionId(processDefinitionId).singleResult();
-        return processDefinition;
+        return repositoryService.createProcessDefinitionQuery().processDefinitionId
+            (processDefinitionId).singleResult();
     }
 
     /**
@@ -92,10 +87,9 @@ public class WorkflowProcessDefinitionService {
         ResourceLoader resourceLoader = new DefaultResourceLoader();
         String[] processKeys = {"leave", "leave-dynamic-from", "leave-formkey", "dispatch"};
         for (String loopProcessKey : processKeys) {
-
-      /*
-       * 需要过滤指定流程
-       */
+            /*
+             * 需要过滤指定流程
+             */
             if (ArrayUtils.isNotEmpty(processKey)) {
                 if (ArrayUtils.contains(processKey, loopProcessKey)) {
                     logger.debug("hit module of {}", (Object[]) processKey);
@@ -104,9 +98,9 @@ public class WorkflowProcessDefinitionService {
                     logger.debug("module: {} not equals process key: {}, ignore and continue find next.", loopProcessKey, processKey);
                 }
             } else {
-        /*
-         * 所有流程
-         */
+            /*
+             * 所有流程
+             */
                 deploySingleProcess(resourceLoader, loopProcessKey, exportDir);
             }
         }

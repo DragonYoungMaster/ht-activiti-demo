@@ -10,8 +10,6 @@ import java.util.Date;
 
 /**
  * 请假流程--邮件任务监听器，用于设置发送邮件时的一些变量
- *
- * @author henryyan
  */
 public class SetMailInfo implements ExecutionListener {
 

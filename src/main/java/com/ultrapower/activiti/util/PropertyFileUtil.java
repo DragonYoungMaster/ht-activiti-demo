@@ -23,8 +23,6 @@ import java.util.Set;
 
 /**
  * 系统属性工具类
- *
- * @author HenryYan
  */
 public class PropertyFileUtil {
 

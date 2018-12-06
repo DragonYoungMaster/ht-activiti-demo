@@ -32,8 +32,6 @@ import java.util.Set;
 
 /**
  * 工作流跟踪相关Service
- *
- * @author HenryYan
  */
 @Component
 public class WorkflowTraceService {
