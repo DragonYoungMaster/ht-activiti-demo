@@ -11,6 +11,8 @@ import org.activiti.editor.language.json.converter.BpmnJsonConverter;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.ByteArrayInputStream;
@@ -46,6 +49,7 @@ public class ModelController {
      * 模型列表
      */
     @RequestMapping(value = "list")
+    @ResponseBody
     public List<Model> modelList() {
         return repositoryService.createModelQuery().list();
     }
@@ -167,5 +171,28 @@ public class ModelController {
         repositoryService.deleteModel(modelId);
         return "redirect:/workflow/model/list";
     }
+
+    /**
+     *  启动流程
+     */
+//    @RequestMapping("/start")
+//    @ResponseBody
+//    public String startProcess(String keyName) {
+//        ProcessInstance process = processEngine.getRuntimeService().startProcessInstanceByKey(keyName);
+//        return process.getId() + " : " + process.getProcessDefinitionId();
+//    }
+//
+//    /**
+//     *  提交任务
+//     */
+//    @RequestMapping("/run")
+//    @ResponseBody
+//    public String run(String processInstanceId) {
+//        Task task = processEngine.getTaskService().createTaskQuery().processInstanceId(processInstanceId).singleResult();
+//
+//        LOG.info("task {} find ", task.getId());
+//        processEngine.getTaskService().complete(task.getId());
+//        return "SUCCESS";
+//    }
 
 }
