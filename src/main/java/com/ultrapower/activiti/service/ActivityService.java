@@ -11,6 +11,7 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.image.ProcessDiagramGenerator;
@@ -54,8 +55,8 @@ public class ActivityService {
   /**
    * 启动流程
    */
-  public void startProcess(String processDefinitionKey, Map<String, Object> variables) {
-    runtimeService.startProcessInstanceByKey(processDefinitionKey, variables);
+  public ProcessInstance startProcess(String processDefinitionKey, Map<String, Object> variables) {
+    return runtimeService.startProcessInstanceByKey(processDefinitionKey, variables);
   }
 
   /**
@@ -71,8 +72,18 @@ public class ActivityService {
   public List<Task> findTasks(String processDefinitionKey, String userId) {
     TaskQuery taskQuery = taskService.createTaskQuery();
     return StringUtils.isNotBlank(processDefinitionKey)
-        ? taskQuery.processDefinitionKey(processDefinitionKey).taskCandidateOrAssigned(userId).list()
-        : taskQuery.taskCandidateOrAssigned(userId).list();
+        ? taskQuery.processDefinitionKey(processDefinitionKey).taskAssignee(userId).list()
+        : taskQuery.taskAssignee(userId).list();
+  }
+
+  public void completeTask(String taskId, String userId, String result) {
+    //获取流程实例
+    taskService.claim(taskId, userId);
+
+    Map<String,Object> vars = new HashMap<>();
+    vars.put("sign", result);
+
+    taskService.complete(taskId, vars);
   }
 
   /**
@@ -82,12 +93,12 @@ public class ActivityService {
    * @param userId 用户id
    * @param result false OR true
    */
-  public void completeTask(String taskId, String userId, String result) {
+  public void completeTask(String taskId, String userId, Boolean result) {
     //获取流程实例
     taskService.claim(taskId, userId);
 
     Map<String,Object> vars = new HashMap<>();
-    vars.put("sign", result);
+    vars.put("deptLeaderPass", result ? "1" : "0");
     taskService.complete(taskId, vars);
   }
 

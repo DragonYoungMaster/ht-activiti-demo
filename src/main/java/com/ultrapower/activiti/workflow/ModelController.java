@@ -171,28 +171,4 @@ public class ModelController {
         repositoryService.deleteModel(modelId);
         return "redirect:/workflow/model/list";
     }
-
-    /**
-     *  启动流程
-     */
-//    @RequestMapping("/start")
-//    @ResponseBody
-//    public String startProcess(String keyName) {
-//        ProcessInstance process = processEngine.getRuntimeService().startProcessInstanceByKey(keyName);
-//        return process.getId() + " : " + process.getProcessDefinitionId();
-//    }
-//
-//    /**
-//     *  提交任务
-//     */
-//    @RequestMapping("/run")
-//    @ResponseBody
-//    public String run(String processInstanceId) {
-//        Task task = processEngine.getTaskService().createTaskQuery().processInstanceId(processInstanceId).singleResult();
-//
-//        LOG.info("task {} find ", task.getId());
-//        processEngine.getTaskService().complete(task.getId());
-//        return "SUCCESS";
-//    }
-
 }

@@ -67,7 +67,7 @@ import javax.xml.stream.XMLStreamReader;
  */
 @Controller
 @RequestMapping(value = "/workflow")
-public class ActivitiController {
+public class ProcessManagerController {
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -119,7 +119,8 @@ public class ActivitiController {
      * 部署全部流程
      */
     @RequestMapping(value = "/redeploy/all")
-    public String redeployAll(@Value("#{APP_PROPERTIES['export.diagram.path']}") String exportDir) throws Exception {
+    public String redeployAll(@Value("#{APP_PROPERTIES['export.diagram.path']}") String exportDir)
+        throws Exception {
         workflowProcessDefinitionService.deployAllFromClasspath(exportDir);
         return "redirect:/workflow/process/list";
     }
