@@ -8,7 +8,7 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 @SpringBootApplication(exclude = SecurityAutoConfiguration.class
-		, scanBasePackages = {"com.ultrapower.activiti"})
+		, scanBasePackages = {"com.ultrapower.activiti", "org.activiti.rest.diagram"})
 @EnableAutoConfiguration(exclude={
 		org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class
 		, org.activiti.spring.boot.SecurityAutoConfiguration.class})
