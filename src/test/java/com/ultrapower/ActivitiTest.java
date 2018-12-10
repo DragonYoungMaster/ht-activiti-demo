@@ -51,18 +51,46 @@ public class ActivitiTest {
 		startProcess(PROCESS_DEFINITION_KEY, APPLY_USER_ID);
 
 		//申请人提请假申请单
-		List<Task> approveTasks = findTasks(PROCESS_DEFINITION_KEY, APPLY_USER_ID);
+		List<Task> approveTasks = findTasksOfAssignee(PROCESS_DEFINITION_KEY, APPLY_USER_ID);
 		String approveTaskId = approveTasks.get(0).getId();
 		setTasksVar(approveTaskId, createApproveInfo(APPLY_USER_ID, 3));
 		completeTasks(approveTaskId, APPLY_USER_ID, "提交审核");
 
 		//部门领导审批
-		List<Task> tasks = findTasks(PROCESS_DEFINITION_KEY, DEPT_LEADER);
+		//List<Task> tasks = findTasksOfAssignee(PROCESS_DEFINITION_KEY, DEPT_LEADER);
+		List<Task> tasks = findTasksOfCandidateUser(PROCESS_DEFINITION_KEY, DEPT_LEADER);
+
 		String taskId = tasks.get(0).getId();
-		activityService.completeTask(taskId, DEPT_LEADER, true);
+    Map<String, Object> vars = getTasksVar(taskId);
+		//activityService.completeTask(taskId, DEPT_LEADER, true);
+
+
+		activityService.completeTask(taskId, DEPT_LEADER, false);
+    repeat();
 
 
 	}
+
+	//重新提交审批
+	private void repeat() {
+    //申请人重新调整请假申请单
+    List<Task> approveTasks = findTasksOfAssignee(PROCESS_DEFINITION_KEY, APPLY_USER_ID);
+    String approveTaskId = approveTasks.get(0).getId();
+    completeTasks(approveTaskId, APPLY_USER_ID, "重新调整");
+
+    //申请人提请假申请单
+    approveTasks = findTasksOfAssignee(PROCESS_DEFINITION_KEY, APPLY_USER_ID);
+    approveTaskId = approveTasks.get(0).getId();
+    setTasksVar(approveTaskId, createApproveInfo(APPLY_USER_ID, 2));
+    completeTasks(approveTaskId, APPLY_USER_ID, "提交审核");
+
+    //部门领导审批
+    //List<Task> tasks = findTasksOfAssignee(PROCESS_DEFINITION_KEY, DEPT_LEADER);
+    List<Task> tasks = findTasksOfCandidateUser(PROCESS_DEFINITION_KEY, DEPT_LEADER);
+    String taskId = tasks.get(0).getId();
+    Map<String, Object> vars = getTasksVar(taskId);
+    activityService.completeTask(taskId, DEPT_LEADER, true);
+  }
 
 	private Map<String, Object> createApproveInfo(String userId, int days) {
 		Map<String, Object> variables = Maps.newHashMap();
@@ -81,8 +109,15 @@ public class ActivitiTest {
 	}
 
 	//获取任务列表
-	public List<Task> findTasks(String processDefinitionKey, String userId) {
-		List<Task> lists = activityService.findTasks(processDefinitionKey, userId);
+	public List<Task> findTasksOfAssignee(String processDefinitionKey, String userId) {
+		List<Task> lists = activityService.findTasksOfAssignee(processDefinitionKey, userId);
+		System.out.println("任务列表："+lists);
+		return lists;
+	}
+
+	//获取任务列表
+	public List<Task> findTasksOfCandidateUser(String processDefinitionKey, String userId) {
+		List<Task> lists = activityService.findTasksOfCandidateUser(processDefinitionKey, userId);
 		System.out.println("任务列表："+lists);
 		return lists;
 	}
@@ -97,21 +132,13 @@ public class ActivitiTest {
 	}
 
 	//获取流程变量
-	public void getTasksVar() {
-		List<Task> lists = activityService.findTasks(PROCESS_DEFINITION_KEY,APPLY_USER_ID);
-		for(Task task : lists) {
-			//获取流程变量【基本类型】
-			String person = (String) taskService.getVariable(task.getId(), "请假人");
-			Integer day = (Integer) taskService.getVariableLocal(task.getId(), "请假天数");
-			Date date = (Date) taskService.getVariable(task.getId(), "请假日期");
-
-			System.out.println("流程变量："+person+"||"+day+"||"+date+"||");
-		}
+	public Map<String, Object> getTasksVar(String taskId) {
+    return taskService.getVariables(taskId);
 	}
 
 	//设置流程变量【实体】
 	public void setTasksVarEntity() {
-		List<Task> lists = activityService.findTasks(PROCESS_DEFINITION_KEY, APPLY_USER_ID);
+		List<Task> lists = activityService.findTasksOfAssignee(PROCESS_DEFINITION_KEY, APPLY_USER_ID);
 		for(Task task : lists) {
 			User user = new User();
 			user.setName("翠花");
@@ -126,7 +153,7 @@ public class ActivitiTest {
 
 	//获取流程变量【实体】  实体必须序列化
 	public void getTasksVarEntity() {
-		List<Task> lists = activityService.findTasks(PROCESS_DEFINITION_KEY,"ht");
+		List<Task> lists = activityService.findTasksOfAssignee(PROCESS_DEFINITION_KEY,"ht");
 		for(Task task : lists) {
 			// 2.获取流程变量，使用javaBean类型
 			User user = (User)taskService.getVariable(task.getId(), "人员信息(添加固定版本)");

@@ -62,18 +62,28 @@ public class ActivityService {
   /**
    * 查询待办任务列表
    */
-  public List<Task> findTasks(String userId) {
-    return findTasks(null, userId);
+  public List<Task> findTasksOfAssignee(String userId) {
+    return findTasksOfAssignee(null, userId);
   }
 
   /**
    * 查询待办任务列表
    */
-  public List<Task> findTasks(String processDefinitionKey, String userId) {
+  public List<Task> findTasksOfAssignee(String processDefinitionKey, String userId) {
     TaskQuery taskQuery = taskService.createTaskQuery();
     return StringUtils.isNotBlank(processDefinitionKey)
         ? taskQuery.processDefinitionKey(processDefinitionKey).taskAssignee(userId).list()
         : taskQuery.taskAssignee(userId).list();
+  }
+
+  /**
+   * 查询待办任务列表
+   */
+  public List<Task> findTasksOfCandidateUser(String processDefinitionKey, String userId) {
+    TaskQuery taskQuery = taskService.createTaskQuery();
+    return StringUtils.isNotBlank(processDefinitionKey)
+        ? taskQuery.processDefinitionKey(processDefinitionKey).taskCandidateUser(userId).list()
+        : taskQuery.taskCandidateUser(userId).list();
   }
 
   public void completeTask(String taskId, String userId, String result) {
