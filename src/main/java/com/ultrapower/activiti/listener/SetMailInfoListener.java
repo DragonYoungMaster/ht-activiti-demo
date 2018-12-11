@@ -1,4 +1,4 @@
-package com.ultrapower.activiti.service;
+package com.ultrapower.activiti.listener;
 
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -11,7 +11,7 @@ import java.util.Date;
 /**
  * 请假流程--邮件任务监听器，用于设置发送邮件时的一些变量
  */
-public class SetMailInfo implements ExecutionListener {
+public class SetMailInfoListener implements ExecutionListener {
 
     private static final long serialVersionUID = 1L;
 

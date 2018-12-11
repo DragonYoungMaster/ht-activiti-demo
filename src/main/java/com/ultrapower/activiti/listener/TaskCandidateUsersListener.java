@@ -1,4 +1,4 @@
-package com.ultrapower.activiti.workflow;
+package com.ultrapower.activiti.listener;
 
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
@@ -11,7 +11,7 @@ import java.util.Arrays;
  * time: 22:07 2018/12/8
  */
 @Service
-public class TaskCandidateUsers implements TaskListener {
+public class TaskCandidateUsersListener implements TaskListener {
   private static final long serialVersionUID = 2265918881748770828L;
 
   @Override
