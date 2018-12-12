@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.activiti.ultrapower</groupId>
-	<artifactId>ht-activiti-demo</artifactId>
+	<artifactId>activiti-demo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 
-	<name>ht-activiti-demo</name>
+	<name>activiti-demo</name>
 	<description>Demo project for Spring Boot</description>
 
 	<parent>
