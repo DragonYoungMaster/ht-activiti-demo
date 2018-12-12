@@ -1,8 +1,9 @@
 package com.ultrapower.activiti.controller;
 
+import com.ultrapower.activiti.service.ActivityService;
+
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,8 @@ public class BaseController {
   protected RepositoryService repositoryService;
 
   @Autowired
-  protected TaskService taskService;
+  protected RuntimeService runtimeService;
 
   @Autowired
-  protected RuntimeService runtimeService;
+  protected ActivityService activityService;
 }
