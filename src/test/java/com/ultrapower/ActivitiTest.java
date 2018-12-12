@@ -39,9 +39,6 @@ public class ActivitiTest {
 		//部门领导审批，拒绝
     audit(PROCESS_DEFINITION_KEY, DEPT_LEADER, createAuditInfo(false));
 
-    //申请人重新调整请假申请单
-    adjust(PROCESS_DEFINITION_KEY, APPLY_USER_ID, null);
-
     //申请人提交请假申请单
     apply(PROCESS_DEFINITION_KEY, APPLY_USER_ID, createApplyInfo(APPLY_USER_ID, 2));
 
@@ -54,10 +51,6 @@ public class ActivitiTest {
   }
 
   private void audit(String processDefinitionKey, String leaderId, Map<String, Object> variables) {
-    findAndCompleteTask(processDefinitionKey, leaderId, variables);
-  }
-
-  private void adjust(String processDefinitionKey, String leaderId, Map<String, Object> variables) {
     findAndCompleteTask(processDefinitionKey, leaderId, variables);
   }
 
